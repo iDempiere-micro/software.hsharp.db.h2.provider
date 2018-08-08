@@ -11,26 +11,25 @@ import java.util.*
 
 @Component
 open class H2DB : IDatabase {
-    protected val DRIVER : String = "org.h2.Driver"
-    protected val DEFAULT_CONN_TEST_SQL : String = "SELECT 1+1"
+    protected val DRIVER: String = "org.h2.Driver"
+    protected val DEFAULT_CONN_TEST_SQL: String = "SELECT 1+1"
 
     /** Connection Timeout in seconds   */
-    protected val CONNECTION_TIMEOUT = 10;
+    protected val CONNECTION_TIMEOUT = 10
 
     /** Driver                  */
-    private val driverObj : org.h2.Driver = registerIfNeeded( org.h2.Driver() )
-    private var driverRegistered : Boolean = false
+    private val driverObj: org.h2.Driver = registerIfNeeded(org.h2.Driver())
+    private var driverRegistered: Boolean = false
 
     private val rand = Random()
 
-    private fun registerIfNeeded( driverInst: org.h2.Driver ): org.h2.Driver {
-        if (!driverRegistered)
-        {
-            DriverManager.registerDriver(driverInst);
-            DriverManager.setLoginTimeout(CONNECTION_TIMEOUT);
-            driverRegistered = true;
+    private fun registerIfNeeded(driverInst: org.h2.Driver): org.h2.Driver {
+        if (!driverRegistered) {
+            DriverManager.registerDriver(driverInst)
+            DriverManager.setLoginTimeout(CONNECTION_TIMEOUT)
+            driverRegistered = true
         }
-        return driverInst;
+        return driverInst
     }
 
     override val status: String
@@ -38,16 +37,16 @@ open class H2DB : IDatabase {
     override val driver: Driver
         get() = driverObj
 
-    override val defaultSetupParameters : IDatabaseSetup
-        get() = H2DatabaseSetup( "jdbc:h2:mem:idempiere;DB_CLOSE_DELAY=-1", "", "" )
+    override val defaultSetupParameters: IDatabaseSetup
+        get() = H2DatabaseSetup("jdbc:h2:mem:idempiere;DB_CLOSE_DELAY=-1", "", "")
 
     override fun setup(parameters: IDatabaseSetup) {
     }
 
-    private var cnnString : String? = null
+    private var cnnString: String? = null
 
     override fun connect(connection: ICConnection) {
-        cnnString= getConnectionURL(connection)
+        cnnString = getConnectionURL(connection)
     }
 
     /**
@@ -57,9 +56,9 @@ open class H2DB : IDatabase {
      *  @param connection Connection Descriptor
      *  @return connection String
      */
-    open fun getConnectionURL (connection: ICConnection) : String
+    open fun getConnectionURL(connection: ICConnection): String
     {
-        dbName = connection.dbName;
+        dbName = connection.dbName
         //  jdbc:h2:file:<filepath>
 
         return "jdbc:h2:file:$dbName"
@@ -67,12 +66,11 @@ open class H2DB : IDatabase {
 
     var dbName = ""
 
-
-    open fun getNumBusyConnections() : Int {
+    open fun getNumBusyConnections(): Int {
         return 0
     }
 
-    open fun getJdbcUrl() : String {
+    open fun getJdbcUrl(): String {
         return cnnString!!
     }
 
@@ -82,10 +80,10 @@ open class H2DB : IDatabase {
     open fun close() {
 
         try {
-            //dataSource.close()
+            // dataSource.close()
         } catch (e: Exception) {
         }
-    }    //	close
+    } // 	close
 
     override val CachedConnection: Connection
         get() {
@@ -96,5 +94,4 @@ open class H2DB : IDatabase {
 
     override fun cleanup(connection: Connection) {
     }
-
 }
