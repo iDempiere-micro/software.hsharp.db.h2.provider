@@ -1,5 +1,6 @@
 package software.hsharp.db.h2.provider
 
+import org.h2.jdbcx.JdbcDataSource
 import org.osgi.service.component.annotations.Component
 import software.hsharp.api.icommon.ICConnection
 import software.hsharp.api.icommon.IDatabase
@@ -8,9 +9,15 @@ import java.sql.Connection
 import java.sql.Driver
 import java.sql.DriverManager
 import java.util.*
+import javax.naming.InitialContext
+import javax.sql.DataSource
 
 @Component
 open class H2DB : IDatabase {
+    override fun fubar() {
+        // left intentionally blank for H2
+    }
+
     protected val DRIVER: String = "org.h2.Driver"
     protected val DEFAULT_CONN_TEST_SQL: String = "SELECT 1+1"
 
@@ -45,8 +52,12 @@ open class H2DB : IDatabase {
 
     private var cnnString: String? = null
 
-    override fun connect(connection: ICConnection) {
-        cnnString = getConnectionURL(connection)
+    override fun connect(connection: ICConnection) : DataSource? {
+        val ds = JdbcDataSource()
+        ds.setURL(getConnectionURL(connection))
+        val ctx = InitialContext()
+
+        return ds
     }
 
     /**
@@ -84,13 +95,6 @@ open class H2DB : IDatabase {
         } catch (e: Exception) {
         }
     } // 	close
-
-    override val CachedConnection: Connection
-        get() {
-            val url = cnnString!!
-            val conn = DriverManager.getConnection(url)
-            return conn
-        }
 
     override fun cleanup(connection: Connection) {
     }

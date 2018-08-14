@@ -19,16 +19,16 @@ data class TestH2DBConnection(override val dbName: String) : ICConnection {
 class TestH2DB {
     @Test
     fun test1() {
+        org.h2.Driver()
         val db= H2DB()
         val login = TestH2DBConnection( "./../../tmp/test" )
 
         db.setup( db.defaultSetupParameters )
-        db.connect( login )
-        val conn = db.CachedConnection
+        val ds = db.connect( login )
 
         //STEP 3: Execute a query
         println("Creating table in given database...")
-        val stmt = conn.createStatement()
+        val stmt = ds!!.connection.createStatement()
         val sql = "CREATE TABLE   REGISTRATION " +
                 "(id INTEGER not NULL, " +
                 " first VARCHAR(255), " +
@@ -40,6 +40,6 @@ class TestH2DB {
 
         // STEP 4: Clean-up environment
         stmt.close()
-        conn.close()
+        ds.connection.close()
     }
 }
