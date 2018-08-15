@@ -55,7 +55,7 @@ open class H2DB : IDatabase {
     override fun connect(connection: ICConnection) : DataSource? {
         val ds = JdbcDataSource()
         ds.setURL(getConnectionURL(connection))
-        val ctx = InitialContext()
+        InitialContext()
 
         return ds
     }
