@@ -8,7 +8,6 @@ import software.hsharp.api.icommon.IDatabaseSetup
 import java.sql.Connection
 import java.sql.Driver
 import java.sql.DriverManager
-import java.util.*
 import javax.naming.InitialContext
 import javax.sql.DataSource
 
@@ -18,17 +17,12 @@ open class H2DB : IDatabase {
         // left intentionally blank for H2
     }
 
-    protected val DRIVER: String = "org.h2.Driver"
-    protected val DEFAULT_CONN_TEST_SQL: String = "SELECT 1+1"
-
     /** Connection Timeout in seconds   */
     protected val CONNECTION_TIMEOUT = 10
 
     /** Driver                  */
     private val driverObj: org.h2.Driver = registerIfNeeded(org.h2.Driver())
     private var driverRegistered: Boolean = false
-
-    private val rand = Random()
 
     private fun registerIfNeeded(driverInst: org.h2.Driver): org.h2.Driver {
         if (!driverRegistered) {
@@ -52,7 +46,7 @@ open class H2DB : IDatabase {
 
     private var cnnString: String? = null
 
-    override fun connect(connection: ICConnection) : DataSource? {
+    override fun connect(connection: ICConnection): DataSource? {
         val ds = JdbcDataSource()
         ds.setURL(getConnectionURL(connection))
         InitialContext()
@@ -76,14 +70,6 @@ open class H2DB : IDatabase {
     }
 
     var dbName = ""
-
-    open fun getNumBusyConnections(): Int {
-        return 0
-    }
-
-    open fun getJdbcUrl(): String {
-        return cnnString!!
-    }
 
     /**
      * Close
